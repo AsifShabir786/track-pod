@@ -110,13 +110,7 @@ const MasterLayout = ({ children }) => {
                 <span>Dashboard</span>
               </Link>
               <ul className="sidebar-submenu">
-                <li>
-                  <NavLink to="/" className={(navData) =>
-                    navData.isActive ? "active-page" : ""
-                  }>
-                    <i className="ri-circle-fill circle-icon text-primary-600 w-auto" />AI
-                  </NavLink>
-                </li>
+               
                 <li>
                   <NavLink to="/index-2" className={(navData) =>
                     navData.isActive ? "active-page" : ""
@@ -131,47 +125,19 @@ const MasterLayout = ({ children }) => {
                     <i className="ri-circle-fill circle-icon text-info-main w-auto" /> eCommerce
                   </NavLink>
                 </li>
-                <li>
-                  <NavLink to="/index-4" className={(navData) =>
-                    navData.isActive ? "active-page" : ""
-                  }>
-                    <i className="ri-circle-fill circle-icon text-danger-main w-auto" />
-                    Cryptocurrency
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/index-5" className={(navData) =>
-                    navData.isActive ? "active-page" : ""
-                  }>
-                    <i className="ri-circle-fill circle-icon text-success-main w-auto" /> Investment
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/index-6" className={(navData) =>
-                    navData.isActive ? "active-page" : ""
-                  }>
-                    <i className="ri-circle-fill circle-icon text-purple w-auto" /> LMS
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/index-7" className={(navData) =>
-                    navData.isActive ? "active-page" : ""
-                  }>
-                    <i className="ri-circle-fill circle-icon text-info-main w-auto" /> NFT &amp; Gaming
-                  </NavLink>
-                </li>
+              
               </ul>
             </li>
 
             <li className="sidebar-menu-group-title">Application</li>
-            <li>
+            {/* <li>
               <NavLink to="/email" className={(navData) =>
                 navData.isActive ? "active-page" : ""
               }>
                 <Icon icon="mage:email" className="menu-icon" />
                 <span>Email</span>
               </NavLink>
-            </li>
+            </li> */}
             <li>
               <NavLink to="/chat-message" className={(navData) =>
                 navData.isActive ? "active-page" : ""
@@ -180,7 +146,7 @@ const MasterLayout = ({ children }) => {
                 <span>Chat</span>
               </NavLink>
             </li>
-            <li>
+            {/* <li>
               <NavLink to="/calendar-main" className={(navData) =>
                 navData.isActive ? "active-page" : ""
               }>
@@ -195,7 +161,7 @@ const MasterLayout = ({ children }) => {
                 <Icon icon="material-symbols:map-outline" className="menu-icon" />
                 <span>Kanban</span>
               </NavLink>
-            </li>
+            </li> */}
 
             {/* Invoice Dropdown */}
             <li className="dropdown">
@@ -237,7 +203,7 @@ const MasterLayout = ({ children }) => {
             </li>
 
             {/* Ai Application Dropdown */}
-            <li className="dropdown">
+            {/* <li className="dropdown">
               <Link to="#">
                 <i className="ri-robot-2-line mr-10" />
 
@@ -280,10 +246,10 @@ const MasterLayout = ({ children }) => {
                   </NavLink>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* Crypto Currency Dropdown */}
-            <li className="dropdown">
+            {/* <li className="dropdown">
               <Link to="#">
                 <i className="ri-robot-2-line mr-10" />
                 <span>Crypto Currency</span>
@@ -321,7 +287,7 @@ const MasterLayout = ({ children }) => {
                   </NavLink>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             <li className="sidebar-menu-group-title">UI Elements</li>
 
@@ -331,7 +297,7 @@ const MasterLayout = ({ children }) => {
                 <Icon icon="solar:document-text-outline" className="menu-icon" />
                 <span>Components</span>
               </Link>
-              <ul className="sidebar-submenu">
+              {/* <ul className="sidebar-submenu">
                 <li>
                   <NavLink to="/typography" className={(navData) =>
                     navData.isActive ? "active-page" : ""
@@ -481,11 +447,11 @@ const MasterLayout = ({ children }) => {
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" /> Upload
                   </NavLink>
                 </li>
-              </ul>
+              </ul> */}
             </li>
 
             {/* Forms Dropdown */}
-            <li className="dropdown">
+            {/* <li className="dropdown">
               <Link to="#">
                 <Icon icon="heroicons:document" className="menu-icon" />
                 <span>Forms</span>
@@ -520,7 +486,7 @@ const MasterLayout = ({ children }) => {
                   </NavLink>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* Table Dropdown */}
             <li className="dropdown">
@@ -547,7 +513,7 @@ const MasterLayout = ({ children }) => {
             </li>
 
             {/* Chart Dropdown */}
-            <li className="dropdown">
+            {/* <li className="dropdown">
               <Link to="#">
                 <Icon icon="solar:pie-chart-outline" className="menu-icon" />
                 <span>Chart</span>
@@ -575,16 +541,16 @@ const MasterLayout = ({ children }) => {
                   </NavLink>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
-            <li>
+            {/* <li>
               <NavLink to="/widgets" className={(navData) =>
                 navData.isActive ? "active-page" : ""
               }>
                 <Icon icon="fe:vector" className="menu-icon" />
                 <span>Widgets</span>
               </NavLink>
-            </li>
+            </li> */}
 
             {/* Users Dropdown */}
             <li className="dropdown">
@@ -681,14 +647,14 @@ const MasterLayout = ({ children }) => {
               </ul>
             </li>
 
-            <li>
+            {/* <li>
               <NavLink to="/gallery" className={(navData) =>
                 navData.isActive ? "active-page" : ""
               }>
                 <Icon icon="solar:gallery-wide-linear" className="menu-icon" />
                 <span>Gallery</span>
               </NavLink>
-            </li>
+            </li> */}
             <li>
               <NavLink to="/pricing" className={(navData) =>
                 navData.isActive ? "active-page" : ""
@@ -697,7 +663,7 @@ const MasterLayout = ({ children }) => {
                 <span>Pricing</span>
               </NavLink>
             </li>
-            <li>
+            {/* <li>
               <NavLink to="/faq" className={(navData) =>
                 navData.isActive ? "active-page" : ""
               }>
@@ -720,7 +686,7 @@ const MasterLayout = ({ children }) => {
                 <Icon icon="octicon:info-24" className="menu-icon" />
                 <span>Terms &amp; Conditions</span>
               </NavLink>
-            </li>
+            </li> */}
 
             {/* Settings Dropdown */}
             <li className="dropdown">
