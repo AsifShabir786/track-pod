@@ -81,6 +81,8 @@ import WidgetsPage from "./pages/WidgetsPage";
 import WizardPage from "./pages/WizardPage";
 import RouteScrollToTop from "./helper/RouteScrollToTop";
 import TextGeneratorNewPage from "./pages/TextGeneratorNewPage";
+import Orderspage from "./pages/Orderspage";
+import DriversPage from "./pages/DriversPage";
 
 
 function App() {
@@ -95,6 +97,10 @@ function App() {
         <Route exact path="/index-5" element={<HomePageFive />} />
         <Route exact path="/index-6" element={<HomePageSix />} />
         <Route exact path="/index-7" element={<HomePageSeven />} />
+        <Route exact path="/Orderspage" element={<Orderspage />} />
+        <Route exact path="/DriversPage" element={<DriversPage />} />
+
+
 
 
         {/* SL */}

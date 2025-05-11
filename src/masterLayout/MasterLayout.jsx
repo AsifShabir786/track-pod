@@ -104,48 +104,44 @@ const MasterLayout = ({ children }) => {
         </div>
         <div className="sidebar-menu-area">
           <ul className="sidebar-menu" id="sidebar-menu">
-            <li className="dropdown">
-              <Link to="#">
-                <Icon icon="solar:home-smile-angle-outline" className="menu-icon" />
-                <span>Dashboard</span>
-              </Link>
-              <ul className="sidebar-submenu">
-               
-                <li>
-                  <NavLink to="/index-2" className={(navData) =>
-                    navData.isActive ? "active-page" : ""
-                  }>
-                    <i className="ri-circle-fill circle-icon text-warning-main w-auto" /> CRM
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/index-3" className={(navData) =>
-                    navData.isActive ? "active-page" : ""
-                  }>
-                    <i className="ri-circle-fill circle-icon text-info-main w-auto" /> eCommerce
-                  </NavLink>
-                </li>
-              
-              </ul>
-            </li>
+          <li>
+  <NavLink to="/index-2" className={(navData) =>
+    navData.isActive ? "active-page" : ""
+  }>
+    <Icon icon="solar:home-smile-angle-outline" className="menu-icon" />
+    <span>Dashboard</span>
+  </NavLink>
+</li>
+
 
             <li className="sidebar-menu-group-title">Application</li>
-            {/* <li>
-              <NavLink to="/email" className={(navData) =>
-                navData.isActive ? "active-page" : ""
-              }>
-                <Icon icon="mage:email" className="menu-icon" />
-                <span>Email</span>
-              </NavLink>
-            </li> */}
             <li>
+  <NavLink to="/Orderspage" className={(navData) =>
+    navData.isActive ? "active-page" : ""
+  }>
+    <Icon icon="mdi:clipboard-check" className="menu-icon" />
+    <span>Orders</span>
+  </NavLink>
+</li>
+<li>
+  <NavLink to="/DriversPage" className={(navData) =>
+    navData.isActive ? "active-page" : ""
+  }>
+    <Icon icon="mdi:steering" className="menu-icon" />
+    <span>Drivers</span>
+  </NavLink>
+</li>
+
+
+            {/* <li>
               <NavLink to="/chat-message" className={(navData) =>
                 navData.isActive ? "active-page" : ""
               }>
                 <Icon icon="bi:chat-dots" className="menu-icon" />
                 <span>Chat</span>
               </NavLink>
-            </li>
+            </li> */}
+            
             {/* <li>
               <NavLink to="/calendar-main" className={(navData) =>
                 navData.isActive ? "active-page" : ""
@@ -164,7 +160,7 @@ const MasterLayout = ({ children }) => {
             </li> */}
 
             {/* Invoice Dropdown */}
-            <li className="dropdown">
+            {/* <li className="dropdown">
               <Link to="#">
                 <Icon icon="hugeicons:invoice-03" className="menu-icon" />
                 <span>Invoice</span>
@@ -200,7 +196,7 @@ const MasterLayout = ({ children }) => {
                   </NavLink>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* Ai Application Dropdown */}
             {/* <li className="dropdown">
@@ -292,12 +288,12 @@ const MasterLayout = ({ children }) => {
             <li className="sidebar-menu-group-title">UI Elements</li>
 
             {/* Components Dropdown */}
-            <li className="dropdown">
+            {/* <li className="dropdown">
               <Link to="#">
                 <Icon icon="solar:document-text-outline" className="menu-icon" />
                 <span>Components</span>
               </Link>
-              {/* <ul className="sidebar-submenu">
+              <ul className="sidebar-submenu">
                 <li>
                   <NavLink to="/typography" className={(navData) =>
                     navData.isActive ? "active-page" : ""
@@ -447,8 +443,8 @@ const MasterLayout = ({ children }) => {
                     <i className="ri-circle-fill circle-icon text-primary-600 w-auto" /> Upload
                   </NavLink>
                 </li>
-              </ul> */}
-            </li>
+              </ul>
+            </li> */}
 
             {/* Forms Dropdown */}
             {/* <li className="dropdown">
@@ -489,7 +485,7 @@ const MasterLayout = ({ children }) => {
             </li> */}
 
             {/* Table Dropdown */}
-            <li className="dropdown">
+            {/* <li className="dropdown">
               <Link to="#">
                 <Icon icon="mingcute:storage-line" className="menu-icon" />
                 <span>Table</span>
@@ -510,7 +506,7 @@ const MasterLayout = ({ children }) => {
                   </NavLink>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* Chart Dropdown */}
             {/* <li className="dropdown">
@@ -614,10 +610,10 @@ const MasterLayout = ({ children }) => {
               </ul>
             </li>
 
-            <li className="sidebar-menu-group-title">Application</li>
+            {/* <li className="sidebar-menu-group-title">Application</li> */}
 
             {/* Authentication Dropdown */}
-            <li className="dropdown">
+            {/* <li className="dropdown">
               <Link to="#">
                 <Icon icon="simple-line-icons:vector" className="menu-icon" />
                 <span>Authentication</span>
@@ -645,7 +641,7 @@ const MasterLayout = ({ children }) => {
                   </NavLink>
                 </li>
               </ul>
-            </li>
+            </li> */}
 
             {/* <li>
               <NavLink to="/gallery" className={(navData) =>
@@ -689,7 +685,7 @@ const MasterLayout = ({ children }) => {
             </li> */}
 
             {/* Settings Dropdown */}
-            <li className="dropdown">
+            {/* <li className="dropdown">
               <Link to="#">
                 <Icon icon="icon-park-outline:setting-two" className="menu-icon" />
                 <span>Settings</span>
@@ -745,7 +741,7 @@ const MasterLayout = ({ children }) => {
                   </NavLink>
                 </li>
               </ul>
-            </li>
+            </li> */}
           </ul>
         </div>
       </aside>
@@ -1410,7 +1406,7 @@ const MasterLayout = ({ children }) => {
             </div>
             <div className="col-auto">
               <p className="mb-0">
-                Made by <span className="text-primary-600">wowtheme7</span>
+                {/* Made by <span className="text-primary-600">wowtheme7</span> */}
               </p>
             </div>
           </div>
