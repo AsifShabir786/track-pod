@@ -20,6 +20,7 @@ import withReactContent from 'sweetalert2-react-content';
 
 const OrdersLayer = () => {
   const [orders, setOrders] = useState([]);
+  console.log("Orders1",orders)
   const [selectedRows, setSelectedRows] = useState([]);
 const [open, setOpen]=useState(false);
 const [submitting, setSubmitting] = useState(false)
@@ -106,24 +107,28 @@ const[RowID,setRowID]=React.useState(0)
     });
 
 
-  useEffect(() => {
-    fetch('https://trackpod-server.vercel.app/orders', {
-      headers: {
-        accept: 'text/plain',
-        'X-API-KEY': '0c340847-b764-4ff8-9250-0bb089486648',
-      },
+useEffect(() => {
+  fetch('https://trackpod-server.vercel.app/orders', {
+    headers: {
+      accept: 'text/plain',
+      'X-API-KEY': '0c340847-b764-4ff8-9250-0bb089486648',
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (Array.isArray(data)) {
+        const formattedData = data.map((order) => ({
+          ...order,
+          Date: new Date(order.Date).toLocaleDateString('en-GB'), // e.g., "01/05/2025"
+        }));
+        setOrders(formattedData);
+        console.log('Orders loaded:', formattedData); // Debug: Check API data
+      } else {
+        console.error('Unexpected API response:', data);
+      }
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setOrders(data);
-          console.log('Orders loaded:', data); // Debug: Check API data
-        } else {
-          console.error('Unexpected API response:', data);
-        }
-      })
-      .catch((error) => console.error('API Error:', error));
-  }, []);
+    .catch((error) => console.error('API Error:', error));
+}, []);
 
   // Debug: Log selected rows whenever selection changes
   const handleRowSelection = (newSelection) => {
@@ -153,6 +158,13 @@ const onSubmit = (data) => {
         text: 'Order added successfully',
         icon: 'success',
         timer: 1000,
+          willOpen: () => {
+          // Apply inline CSS to set high z-index for SweetAlert2 popup
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style = 'z-index: 1500;';
+          }
+        },
       });
     })
     .catch((error) => {
@@ -162,12 +174,20 @@ const onSubmit = (data) => {
         text: error.response?.data?.message || 'Failed to add Order',
         icon: 'error',
         timer: 2000,
+          willOpen: () => {
+          // Apply inline CSS to set high z-index for SweetAlert2 popup
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style = 'z-index: 1500;';
+          }
+        },
       });
     })
     .finally(() => {
       setSubmitting(false); // Always reset submitting state
     });
 };
+
   const columns = [
     {
       field: 'Number',
