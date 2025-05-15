@@ -10,7 +10,7 @@ import {
   Modal,
   TextField
 } from '@mui/material';
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, GridToolbarExport,GridToolbar } from '@mui/x-data-grid';
 import CancelTwoToneIcon from "@mui/icons-material/CancelTwoTone";
 import { Controller, useForm } from "react-hook-form";
 import SaveIcon from "@mui/icons-material/Save";
@@ -25,87 +25,7 @@ const [open, setOpen]=useState(false);
 const [submitting, setSubmitting] = useState(false)
 const [refresh, setRefresh] = React.useState(false)
 const[RowID,setRowID]=React.useState(0)
-  const gridRowStyle = {
-    boxShadow: 2,
-    border: 2,
-    borderRadius: 2,
-    background: "white",
-    fontSize: "13.6px !important",
-    color: "dark",
-    borderColor: "rgba(5, 152, 236, 0.637) !important",
-    "& .MuiDataGrid-row:hover": {
-      color: "#000000 !important",
-    },
-    "& .MuiDataGrid-cell:hover": {
-      color: "#8392ab !important",
-      fontSize: "14.6px !important",
-    },
 
-    "& .severe .MuiBadge-badge": {
-      background: "#DC143C !important",
-      width: "90px",
-      textTransform: "none !important",
-      color: "black !important",
-      //color: 'white !important',
-    },
-    "& .moderatesevere .MuiBadge-badge": {
-      background: "#FFA500 !important",
-      width: "90px",
-      textTransform: "none !important",
-      color: "black !important",
-      //color: 'white !important',
-    },
-    "& .moderatered .MuiBadge-badge": {
-      background: "red !important",
-      width: "90px",
-      textTransform: "none !important",
-      color: "black !important",
-      //color: 'white !important',
-    },
-    "& .moderate .MuiBadge-badge": {
-      background: "#FFA07A",
-      width: "90px",
-      textTransform: "none !important",
-      color: "black !important",
-      // color: 'white !important',
-    },
-    "& .mild .MuiBadge-badge": {
-      background: "#fbcf33",
-      width: "90px",
-      color: "black !important",
-      // color: '#fff !important',
-    },
-    "& .low .MuiBadge-badge": {
-      background: "#389837",
-      width: "90px",
-      textTransform: "none !important",
-      color: "black !important",
-      // color: 'white !important',
-    },
-    "& .uppercentage .MuiBadge-badge": {
-      background: "red",
-      width: "90px",
-      textTransform: "none !important",
-      color: "black !important",
-      // color: 'white !important',
-    },
-    "& .downpercentage .MuiBadge-badge": {
-      background: "yellow",
-      width: "90px",
-      color: "black !important",
-    },
-    "& .samepercentage .MuiBadge-badge": {
-      background: "green",
-      width: "90px",
-      color: "black !important",
-
-      // color: 'white !important',
-    },
-    "& .super-app-theme--header": {
-      backgroundColor: "#FFFFC2",
-      // borderRadius: 1,
-    },
-  };
   const fields = [
   "id",
     "Number",
@@ -187,9 +107,7 @@ const[RowID,setRowID]=React.useState(0)
 
 
   useEffect(() => {
-    // fetch('https://trackpod-server.vercel.app/orders', {
     fetch('http://192.168.100.94:9001/orders', {
-
       headers: {
         accept: 'text/plain',
         'X-API-KEY': '0c340847-b764-4ff8-9250-0bb089486648',
@@ -336,22 +254,16 @@ const onSubmit = (data) => {
     },
   ];
 
+  // Custom toolbar with export button
 const CustomToolbar = () => {
     return (
-      <GridToolbarContainer>
+      <Box sx={{ display: 'flex', alignItems: 'center', p: 1 }}>
         <Typography variant="body2" sx={{ mr: 2 }}>
           Selected Rows: {selectedRows.length}
         </Typography>
-        <GridToolbarExport
-          csvOptions={{
-            fileName: 'all_orders_export', // Changed filename to reflect all orders
-            utf8WithBom: true,
-          }}
-        />
-      </GridToolbarContainer>
+      </Box>
     );
   };
-
 const handleClickOpen =()=>{
   setOpen(true)
 }
@@ -940,27 +852,33 @@ const handleClickOpen =()=>{
           },
         }}
       >
-    <DataGrid
-  rows={orders}
-  columns={columns}
-  getRowId={(row) => row._id}
-  initialState={{
-    pagination: {
-      paginationModel: {
-        pageSize: 10,
-      },
-    },
-  }}
-  pageSizeOptions={[10]}
-  checkboxSelection
-  onRowSelectionModelChange={(newSelection) => {
-    setSelectedRows(newSelection);
-  }}
-                  sx={gridRowStyle}
-
-  slots={{ toolbar: () => <CustomToolbar selectedRows={selectedRows} /> }}
-/>
-
+<DataGrid
+              rows={orders}
+              columns={columns}
+              getRowId={(row) => row._id || row.Number}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 10,
+                  },
+                },
+              }}
+              pageSizeOptions={[10]}
+              checkboxSelection
+              onRowSelectionModelChange={handleRowSelection}
+              slots={{
+                toolbar: GridToolbar, // Use the deprecated but functional GridToolbar
+              }}
+              slotProps={{
+                toolbar: {
+                  csvOptions: {
+                    fileName: 'selected_orders_export',
+                    utf8WithBom: true,
+                  },
+                  printOptions: { disableToolbarButton: true }, // Disable print if not needed
+                },
+              }}
+            />
       </Box>
     </CardContent>
   </Card>

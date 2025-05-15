@@ -17,7 +17,7 @@
     "@iconify-json/solar": "^1.2.0",
     "@mui/icons-material": "^7.1.0",
     "@mui/material": "^7.1.0",
-    "@mui/x-data-grid": "^8.3.1",
+    "@mui/x-data-grid": "^6.18.0",
     "@phosphor-icons/react": "^2.1.7",
     "@popperjs/core": "^2.11.8",
     "@ramonak/react-progress-bar": "^5.2.0",
