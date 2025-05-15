@@ -160,7 +160,7 @@ const onSubmit = (data) => {
       console.error('Error adding Oeder:', error);
       Swal.fire({
         title: 'Error',
-        text: error.response?.data?.message || 'Failed to add Order',
+        text: error.response?.data?.message || 'Failed to add Driver',
         icon: 'error',
         timer: 2000,
       });
@@ -287,7 +287,7 @@ const handleClickOpen =()=>{
             color="primary"
            onClick={handleClickOpen}
           >
-            Add Order
+            Add Driver
           </Button>
         </Grid>
       </Grid>
@@ -323,7 +323,7 @@ const handleClickOpen =()=>{
               color: '#333',
             }}
           >
-            Add Order
+            Add Driver
           </Typography>
           <IconButton
             onClick={handleClose}
