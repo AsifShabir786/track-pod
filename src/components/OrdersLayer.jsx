@@ -107,7 +107,7 @@ const[RowID,setRowID]=React.useState(0)
 
 
   useEffect(() => {
-    fetch('http://192.168.100.94:9001/orders', {
+    fetch('https://trackpod-server.vercel.app/orders', {
       headers: {
         accept: 'text/plain',
         'X-API-KEY': '0c340847-b764-4ff8-9250-0bb089486648',
