@@ -131,6 +131,14 @@ const MasterLayout = ({ children }) => {
     <span>Drivers</span>
   </NavLink>
 </li>
+<li>
+  <NavLink to="/VehiclesPage" className={(navData) =>
+    navData.isActive ? "active-page" : ""
+  }>
+    <Icon icon="eva:car-outline" className="menu-icon" />
+    <span>Vehicles</span>
+  </NavLink>
+</li>
 
 
             {/* <li>

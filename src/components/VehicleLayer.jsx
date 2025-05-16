@@ -18,7 +18,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from 'sweetalert2-react-content';
 
-const OrdersLayer = () => {
+const VehicleLayer  = () => {
   const [orders, setOrders] = useState([]);
   console.log("Orders1",orders)
   const [selectedRows, setSelectedRows] = useState([]);
@@ -906,4 +906,4 @@ const handleClickOpen =()=>{
   );
 };
 
-export default OrdersLayer;
+export default VehicleLayer ;

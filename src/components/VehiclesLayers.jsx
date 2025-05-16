@@ -9,8 +9,6 @@ import {
   IconButton,
   Modal,
   TextField,
-  Checkbox,
-  FormControlLabel,
 } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import CancelTwoToneIcon from '@mui/icons-material/CancelTwoTone';
@@ -20,9 +18,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Controller, useForm } from 'react-hook-form';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
 
-const DriversLayers = () => {
+const VehiclesLayers = () => {
   const [orders, setOrders] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [open, setOpen] = useState(false);
@@ -32,32 +29,27 @@ const DriversLayers = () => {
   const [modalMode, setModalMode] = useState('add'); // 'add', 'view', or 'edit'
 
   const fields = [
-    'id',
-    'Active',
-    'Depot',
+    'Id',
+    'DriverId',
+    'DriverUsername',
     'DepotId',
-    'HomeAddress',
-    'Name',
+    'Depot',
     'Number',
-    'Phone',
-    'Username',
-    'Vehicle',
-    'Zone',
+    'Weight',
+    'Volume',
+    'Pallets',
   ];
 
   const defValues = {
-    _id: '',
     Id: '',
-    Number: '',
-    Active: false,
-    Depot: '',
+    DriverId: '',
+    DriverUsername: '',
     DepotId: '',
-    HomeAddress: '',
-    Name: '',
-    Phone: '',
-    Username: '',
-    Vehicle: '',
-    Zone: '',
+    Depot: '',
+    Number: '',
+    Weight: 0,
+    Volume: 0,
+    Pallets: 0,
   };
 
   const {
@@ -78,7 +70,7 @@ const DriversLayers = () => {
   });
 
   useEffect(() => {
-    fetch('https://trackpod-server.vercel.app/drivers', {
+    fetch('https://trackpod-server.vercel.app/vehicle', {
       headers: {
         accept: 'text/plain',
         'X-API-KEY': '0c340847-b764-4ff8-9250-0bb089486648',
@@ -117,20 +109,18 @@ const DriversLayers = () => {
     };
 
     if (modalMode === 'add') {
-      // Add driver
       const postData = {
-        Number: data.Number,
-        Name: data.Name,
-        Username: data.Username,
-        HomeAddress: data.HomeAddress,
-        Vehicle: data.Vehicle,
+        Id: data.Id,
+        DriverId: data.DriverId,
+        DriverUsername: data.DriverUsername,
         DepotId: data.DepotId,
         Depot: data.Depot,
-        Zone: data.Zone,
-        Phone: data.Phone,
-        Active: data.Active,
+        Number: data.Number,
+        Weight: data.Weight,
+        Volume: data.Volume,
+        Pallets: data.Pallets,
       };
-      const apiUrl = 'https://trackpod-server.vercel.app/drivers111/add';
+      const apiUrl = 'https://trackpod-server.vercel.app/vehicle/add';
 
       axios
         .post(apiUrl, postData, { headers })
@@ -148,7 +138,7 @@ const DriversLayers = () => {
             willOpen: () => {
               const swalContainer = document.querySelector('.swal2-container');
               if (swalContainer) {
-                swalContainer.style = 'z-index: 1500;';
+                swalContainer.style = 'z-index: 1500';
               }
             },
           });
@@ -163,7 +153,7 @@ const DriversLayers = () => {
             willOpen: () => {
               const swalContainer = document.querySelector('.swal2-container');
               if (swalContainer) {
-                swalContainer.style = 'z-index: 1500;';
+                swalContainer.style = 'z-index: 1500';
               }
             },
           });
@@ -172,22 +162,18 @@ const DriversLayers = () => {
           setSubmitting(false);
         });
     } else if (modalMode === 'edit') {
-      // Update driver
       const putData = {
-        _id: data._id,
         Id: data.Id,
-        Number: data.Number,
-        Name: data.Name,
-        Username: data.Username,
-        HomeAddress: data.HomeAddress,
-        Vehicle: data.Vehicle,
+        DriverId: data.DriverId,
+        DriverUsername: data.DriverUsername,
         DepotId: data.DepotId,
         Depot: data.Depot,
-        Zone: data.Zone,
-        Phone: data.Phone,
-        Active: data.Active,
+        Number: data.Number,
+        Weight: data.Weight,
+        Volume: data.Volume,
+        Pallets: data.Pallets,
       };
-      const apiUrl = 'https://trackpod-server.vercel.app/drivers/update';
+      const apiUrl = 'https://trackpod-server.vercel.app/vehicle/update';
 
       axios
         .put(apiUrl, putData, { headers })
@@ -205,7 +191,7 @@ const DriversLayers = () => {
             willOpen: () => {
               const swalContainer = document.querySelector('.swal2-container');
               if (swalContainer) {
-                swalContainer.style = 'z-index: 1500;';
+                swalContainer.style = 'z-index: 1500';
               }
             },
           });
@@ -220,7 +206,7 @@ const DriversLayers = () => {
             willOpen: () => {
               const swalContainer = document.querySelector('.swal2-container');
               if (swalContainer) {
-                swalContainer.style = 'z-index: 1500;';
+                swalContainer.style = 'z-index: 1500';
               }
             },
           });
@@ -228,69 +214,6 @@ const DriversLayers = () => {
         .finally(() => {
           setSubmitting(false);
         });
-    }
-  };
-
-  const handleNumberClick = async (rowId, mode = 'view') => {
-    if (!rowId) {
-      console.error('Invalid rowId:', rowId);
-      Swal.fire({
-        title: 'Error',
-        text: 'Invalid driver ID',
-        icon: 'error',
-        timer: 2000,
-      });
-      return;
-    }
-
-    try {
-      const encodedId = encodeURIComponent(rowId);
-      console.log('Fetching driver with Id:', rowId, 'Encoded:', encodedId);
-      const response = await axios.get(`https://trackpod-server.vercel.app/drivers/${encodedId}`, {
-        headers: {
-          Accept: 'application/json',
-        },
-      });
-
-      const driverData = response.data;
-      console.log('Driver data from new API (Id):', driverData);
-
-      // Reset form before setting new values
-      reset(defValues);
-
-      // Set form values with fetched data
-      setValue('_id', driverData._id || '');
-      setValue('Id', driverData.Id || driverData.id || '');
-      setValue('Number', driverData.number || driverData.Number || driverData.id || '');
-      setValue('Name', driverData.Name || '');
-      setValue('Username', driverData.Username || '');
-      setValue('HomeAddress', driverData.HomeAddress || '');
-      setValue('Vehicle', driverData.Vehicle || '');
-      setValue('DepotId', driverData.DepotId || '');
-      setValue('Depot', driverData.Depot || '');
-      setValue('Zone', driverData.Zone || '');
-      setValue('Phone', driverData.Phone || '');
-      setValue('Active', driverData.Active || false);
-
-      // Open modal in specified mode
-      setModalMode(mode);
-      setOpen(true);
-    } catch (error) {
-      console.error('Error fetching driver by Id:', error, 'Response:', error.response?.data);
-      let errorMessage = 'Failed to fetch driver data';
-      if (error.code === 'ERR_NETWORK') {
-        errorMessage = 'Cannot connect to server. Please ensure the server is running at 192.168.100.94:9001.';
-      } else if (error.response) {
-        errorMessage = error.response.data?.message || `Server error: ${error.response.status} - ${JSON.stringify(error.response.data)}`;
-      } else {
-        errorMessage = error.message;
-      }
-      Swal.fire({
-        title: 'Error',
-        text: errorMessage,
-        icon: 'error',
-        timer: 4000,
-      });
     }
   };
 
@@ -309,60 +232,50 @@ const DriversLayers = () => {
     try {
       const encodedUsername = encodeURIComponent(username);
       console.log('Fetching driver with Username:', username, 'Encoded:', encodedUsername);
-      const response = await axios.get(`https://trackpod-server.vercel.app/drivers?username=${encodedUsername}&_t=${Date.now()}`, {
-        headers: { Accept: 'application/json' },
-      });
+      const response = await axios.get(
+        `https://trackpod-server.vercel.app/vehicle?username=${encodedUsername}&_t=${Date.now()}`,
+        {
+          headers: { Accept: 'application/json' },
+        }
+      );
 
-      let driverData = response.data;
-      console.log('Raw driver data from new API (Username):', driverData);
+      let vehicleData = response.data;
+      console.log('Raw driver data from API:', vehicleData);
 
-      // Handle array or single object
-      if (Array.isArray(driverData)) {
-        driverData = driverData.find(driver => driver.Username === username || driver.username === username);
-        if (!driverData) {
+      if (Array.isArray(vehicleData)) {
+        vehicleData = vehicleData.find(
+          (driver) => driver.DriverUsername === username || driver.username === username
+        );
+        if (!vehicleData) {
           throw new Error(`No driver found with username: ${username}`);
         }
-      } else if (!driverData || Object.keys(driverData).length === 0) {
+      } else if (!vehicleData || Object.keys(vehicleData).length === 0) {
         throw new Error('No driver data returned for username');
       }
 
-      // Normalize field names
       const normalizedData = {
-        _id: driverData._id || '',
-        Id: driverData.Id || driverData.id || '',
-        Number: driverData.number || driverData.Number || driverData.id || '',
-        Name: driverData.name || driverData.Name || '',
-        Username: driverData.username || driverData.Username || '',
-        HomeAddress: driverData.homeAddress || driverData.HomeAddress || driverData.address || '',
-        Vehicle: driverData.vehicle || driverData.Vehicle || '',
-        DepotId: driverData.depotId || driverData.DepotId || driverData.depot_id || '',
-        Depot: driverData.depot || driverData.Depot || '',
-        Zone: driverData.zone || driverData.Zone || '',
-        Phone: driverData.phone || driverData.Phone || '',
-        Active: driverData.active || driverData.Active || false,
+        Id: vehicleData.Id || vehicleData.id || '',
+        DriverId: vehicleData.DriverId || vehicleData.driverId || '',
+        DriverUsername: vehicleData.DriverUsername || vehicleData.username || '',
+        DepotId: vehicleData.DepotId || vehicleData.depotId || '',
+        Depot: vehicleData.Depot || vehicleData.depot || '',
+        Number: vehicleData.Number || vehicleData.number || '',
+        Weight: vehicleData.Weight || vehicleData.weight || 0,
+        Volume: vehicleData.Volume || vehicleData.volume || 0,
+        Pallets: vehicleData.Pallets || vehicleData.pallets || 0,
       };
 
-      console.log('Normalized driver data (Username):', normalizedData);
+      console.log('Normalized driver data:', normalizedData);
 
-      // Reset form before setting new values
       reset(defValues);
       console.log('Form state after reset:', getValues());
 
-      // Set form values with normalized data
-      setValue('_id', normalizedData._id);
-      setValue('Id', normalizedData.Id);
-      setValue('Number', normalizedData.Number);
-      setValue('Name', normalizedData.Name);
-      setValue('Username', normalizedData.Username);
-      setValue('HomeAddress', normalizedData.HomeAddress);
-      setValue('Vehicle', normalizedData.Vehicle);
-      setValue('DepotId', normalizedData.DepotId);
-      setValue('Depot', normalizedData.Depot);
-      setValue('Zone', normalizedData.Zone);
-      setValue('Phone', normalizedData.Phone);
-      setValue('Active', normalizedData.Active);
+      Object.keys(normalizedData).forEach((key) => {
+        setValue(key, normalizedData[key]);
+      });
 
-      // Open modal in view mode
+      console.log('Form values after setValue:', getValues());
+
       setModalMode('view');
       setOpen(true);
     } catch (error) {
@@ -384,84 +297,43 @@ const DriversLayers = () => {
     }
   };
 
-  const handleDeleteClick = async (driverId, driverName) => {
-    if (!driverId) {
-      console.error('Invalid driverId:', driverId);
+  const handleEditRowClick = (row) => {
+    if (!row || !row.Id) {
+      console.error('Invalid row data:', row);
       Swal.fire({
         title: 'Error',
-        text: 'Invalid driver ID',
+        text: 'Invalid record data',
         icon: 'error',
         timer: 2000,
       });
       return;
     }
 
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: `You are about to delete driver "${driverName}". This action cannot be undone.`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!',
-      willOpen: () => {
-        const swalContainer = document.querySelector('.swal2-container');
-        if (swalContainer) {
-          swalContainer.style = 'z-index: 1500;';
-        }
-      },
+    const normalizedData = {
+      Id: row.Id || '',
+      DriverId: row.DriverId || '',
+      DriverUsername: row.DriverUsername || '',
+      DepotId: row.DepotId || '',
+      Depot: row.Depot || '',
+      Number: row.Number || '',
+      Weight: row.Weight || 0,
+      Volume: row.Volume || 0,
+      Pallets: row.Pallets || 0,
+    };
+
+    console.log('Normalized edit data:', normalizedData);
+
+    reset(defValues);
+    console.log('Form state after reset:', getValues());
+
+    Object.keys(normalizedData).forEach((key) => {
+      setValue(key, normalizedData[key]);
     });
 
-    if (!result.isConfirmed) {
-      return;
-    }
+    console.log('Form values after setValue:', getValues());
 
-    try {
-      const encodedId = encodeURIComponent(driverId);
-      console.log('Deleting driver with ID:', driverId, 'Encoded:', encodedId);
-      await axios.delete(`https://trackpod-server.vercel.app/drivers/delete/${encodedId}`, {
-        headers: {
-          Accept: 'text/plain',
-          'Content-Type': 'application/json',
-        },
-      });
-
-      setRefresh((prev) => !prev);
-      Swal.fire({
-        title: 'Driver Deleted',
-        text: `Driver "${driverName}" deleted successfully`,
-        icon: 'success',
-        timer: 1000,
-        willOpen: () => {
-          const swalContainer = document.querySelector('.swal2-container');
-          if (swalContainer) {
-            swalContainer.style = 'z-index: 1500;';
-          }
-        },
-      });
-    } catch (error) {
-      console.error('Error deleting driver:', error, 'Response:', error.response?.data);
-      let errorMessage = 'Failed to delete driver';
-      if (error.code === 'ERR_NETWORK') {
-        errorMessage = 'Cannot connect to server. Please ensure the server is running at localhost:3000.';
-      } else if (error.response) {
-        errorMessage = error.response.data?.message || `Server error: ${error.response.status} - ${JSON.stringify(error.response.data)}`;
-      } else {
-        errorMessage = error.message;
-      }
-      Swal.fire({
-        title: 'Error',
-        text: errorMessage,
-        icon: 'error',
-        timer: 4000,
-        willOpen: () => {
-          const swalContainer = document.querySelector('.swal2-container');
-          if (swalContainer) {
-            swalContainer.style = 'z-index: 1500;';
-          }
-        },
-      });
-    }
+    setModalMode('edit');
+    setOpen(true);
   };
 
   const handleClickOpen = () => {
@@ -481,36 +353,105 @@ const DriversLayers = () => {
     setModalMode('edit');
   };
 
+  const handleDeleteClick = async (id) => {
+    if (!id) {
+      console.error('Invalid ID:', id);
+      Swal.fire({
+        title: 'Error',
+        text: 'Invalid record ID',
+        icon: 'error',
+        timer: 2000,
+      });
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This will permanently delete the record!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+      willOpen: () => {
+        const swalContainer = document.querySelector('.swal2-container');
+        if (swalContainer) {
+          swalContainer.style = 'z-index: 1500';
+        }
+      },
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    try {
+      console.log('Deleting record with ID:', id);
+      const apiUrl = 'https://trackpod-server.vercel.app/vehicle/delete';
+      await axios.delete(apiUrl, {
+        headers: {
+          'Content-Type': 'application/json',
+          accept: 'text/plain',
+        },
+        data: { Id: id },
+      });
+
+      setRefresh((prev) => !prev);
+      Swal.fire({
+        title: 'Deleted',
+        text: 'Record deleted successfully',
+        icon: 'success',
+        timer: 1000,
+        willOpen: () => {
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style = 'z-index: 1500';
+          }
+        },
+      });
+    } catch (error) {
+      console.error('Error deleting record:', error, 'Response:', error.response?.data);
+      let errorMessage = 'Failed to delete record';
+      if (error.code === 'ERR_NETWORK') {
+        errorMessage = 'Cannot connect to server. Please ensure the server is running at 192.168.100.94:9001.';
+      } else if (error.response) {
+        errorMessage = error.response.data?.message || `Server error: ${error.response.status} - ${JSON.stringify(error.response.data)}`;
+      } else {
+        errorMessage = error.message;
+      }
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        timer: 2000,
+        willOpen: () => {
+          const swalContainer = document.querySelector('.swal2-container');
+          if (swalContainer) {
+            swalContainer.style = 'z-index: 1500';
+          }
+        },
+      });
+    }
+  };
+
   const columns = [
+     {
+      field: 'Id',
+      headerName: 'Id',
+      width: 100,
+      editable: false,
+      headerClassName: 'super-app-theme--header',
+    },
     {
       field: 'Number',
       headerName: 'Order #',
       width: 70,
       headerClassName: 'super-app-theme--header',
-      renderCell: (params) => {
-        console.log('Row data:', params.row);
-        return (
-          <Button
-            variant="text"
-            onClick={() => handleNumberClick(params.row.Id, 'view')}
-            sx={{ textTransform: 'none', padding: 0, minWidth: 0 }}
-          >
-            {params.value || 'N/A'}
-          </Button>
-        );
-      },
     },
     {
-      field: 'Name',
-      headerName: 'Name',
-      width: 130,
-      editable: false,
-      headerClassName: 'super-app-theme--header',
-    },
-    {
-      field: 'Username',
-      headerName: 'User Name',
-      width: 200,
+      field: 'DriverUsername',
+      headerName: 'Username',
+      width: 150,
       editable: false,
       headerClassName: 'super-app-theme--header',
       renderCell: (params) => {
@@ -527,37 +468,37 @@ const DriversLayers = () => {
       },
     },
     {
-      field: 'HomeAddress',
-      headerName: 'Address',
-      width: 150,
-      editable: false,
-      headerClassName: 'super-app-theme--header',
-    },
-    {
-      field: 'Vehicle',
-      headerName: 'Vehicle',
-      width: 150,
+      field: 'Depot',
+      headerName: 'Depot',
+      width: 180,
       editable: false,
       headerClassName: 'super-app-theme--header',
     },
     {
       field: 'DepotId',
-      headerName: 'Depot Id',
-      width: 150,
+      headerName: 'DepotId',
+      width: 200,
       editable: false,
       headerClassName: 'super-app-theme--header',
     },
     {
-      field: 'Depot',
-      headerName: 'Depot',
-      width: 150,
+      field: 'Pallets',
+      headerName: 'Pallets',
+      width: 180,
       editable: false,
       headerClassName: 'super-app-theme--header',
     },
     {
-      field: 'Zone',
-      headerName: 'Zone',
-      width: 150,
+      field: 'Volume',
+      headerName: 'Volume',
+      width: 180,
+      editable: false,
+      headerClassName: 'super-app-theme--header',
+    },
+    {
+      field: 'Weight',
+      headerName: 'Weight',
+      width: 180,
       editable: false,
       headerClassName: 'super-app-theme--header',
     },
@@ -567,15 +508,16 @@ const DriversLayers = () => {
       width: 100,
       sortable: false,
       filterable: false,
+      disableColumnMenu: true,
       headerClassName: 'super-app-theme--header',
       renderCell: (params) => (
-        <IconButton
-          color="primary"
-          onClick={() => handleNumberClick(params.row.Id, 'edit')}
-          title={`Edit ${params.row.Name}`}
+        <Button
+          variant="text"
+          onClick={() => handleEditRowClick(params.row)}
+          sx={{ minWidth: 0 }}
         >
-          <EditIcon />
-        </IconButton>
+          <EditIcon color="primary" />
+        </Button>
       ),
     },
     {
@@ -584,15 +526,16 @@ const DriversLayers = () => {
       width: 100,
       sortable: false,
       filterable: false,
+      disableColumnMenu: true,
       headerClassName: 'super-app-theme--header',
       renderCell: (params) => (
-        <IconButton
-          color="error"
-          onClick={() => handleDeleteClick(params.row._id, params.row.Name)}
-          title={`Delete ${params.row.Name}`}
+        <Button
+          variant="text"
+          onClick={() => handleDeleteClick(params.row.Id)}
+          sx={{ minWidth: 0 }}
         >
-          <DeleteIcon />
-        </IconButton>
+          <DeleteIcon color="error" />
+        </Button>
       ),
     },
   ];
@@ -653,25 +596,9 @@ const DriversLayers = () => {
                 <Grid item xs={12}>
                   <Grid container spacing={2}>
                     <Grid item xs={6} sm={6} sx={{ width: '385px' }}>
-                      <Typography sx={{ fontSize: '15px' }}>Name</Typography>
-                      <Controller
-                        name="Name"
-                        control={control}
-                        render={({ field }) => (
-                          <TextField
-                            size="small"
-                            placeholder="Enter Name"
-                            {...field}
-                            fullWidth
-                            disabled={modalMode === 'view'}
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={6} sm={6} sx={{ width: '385px' }}>
                       <Typography sx={{ fontSize: '15px' }}>Username</Typography>
                       <Controller
-                        name="Username"
+                        name="DriverUsername"
                         control={control}
                         render={({ field }) => (
                           <TextField
@@ -733,14 +660,14 @@ const DriversLayers = () => {
                       />
                     </Grid>
                     <Grid item xs={6} sm={6} sx={{ width: '385px' }}>
-                      <Typography sx={{ fontSize: '15px' }}>Address</Typography>
+                      <Typography sx={{ fontSize: '15px' }}>Driver Id</Typography>
                       <Controller
-                        name="HomeAddress"
+                        name="DriverId"
                         control={control}
                         render={({ field }) => (
                           <TextField
                             size="small"
-                            placeholder="Enter Address"
+                            placeholder="Enter DriverId"
                             {...field}
                             fullWidth
                             disabled={modalMode === 'view'}
@@ -749,14 +676,14 @@ const DriversLayers = () => {
                       />
                     </Grid>
                     <Grid item xs={6} sm={6} sx={{ width: '385px' }}>
-                      <Typography sx={{ fontSize: '15px' }}>Phone</Typography>
+                      <Typography sx={{ fontSize: '15px' }}>Pallets</Typography>
                       <Controller
-                        name="Phone"
+                        name="Pallets"
                         control={control}
                         render={({ field }) => (
                           <TextField
                             size="small"
-                            placeholder="Enter Phone"
+                            placeholder="Enter Pallets"
                             {...field}
                             fullWidth
                             type="number"
@@ -766,53 +693,35 @@ const DriversLayers = () => {
                       />
                     </Grid>
                     <Grid item xs={6} sm={6} sx={{ width: '385px' }}>
-                      <Typography sx={{ fontSize: '15px' }}>Vehicle</Typography>
+                      <Typography sx={{ fontSize: '15px' }}>Volume</Typography>
                       <Controller
-                        name="Vehicle"
+                        name="Volume"
                         control={control}
                         render={({ field }) => (
                           <TextField
                             size="small"
-                            placeholder="Enter Vehicle"
+                            placeholder="Enter Volume"
                             {...field}
                             fullWidth
+                            type="number"
                             disabled={modalMode === 'view'}
                           />
                         )}
                       />
                     </Grid>
                     <Grid item xs={6} sm={6} sx={{ width: '385px' }}>
-                      <Typography sx={{ fontSize: '15px' }}>Zone</Typography>
+                      <Typography sx={{ fontSize: '15px' }}>Weight</Typography>
                       <Controller
-                        name="Zone"
+                        name="Weight"
                         control={control}
                         render={({ field }) => (
                           <TextField
                             size="small"
-                            placeholder="Enter Zone"
+                            placeholder="Enter Weight"
                             {...field}
                             fullWidth
+                            type="number"
                             disabled={modalMode === 'view'}
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={6} sm={6} sx={{ width: '385px' }}>
-                      <Typography sx={{ fontSize: '15px' }}>Active</Typography>
-                      <Controller
-                        name="Active"
-                        control={control}
-                        render={({ field }) => (
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                {...field}
-                                checked={field.value || false}
-                                onChange={(e) => field.onChange(e.target.checked)}
-                                disabled={modalMode === 'view'}
-                              />
-                            }
-                            label="Active"
                           />
                         )}
                       />
@@ -880,7 +789,7 @@ const DriversLayers = () => {
             <DataGrid
               rows={orders}
               columns={columns}
-              getRowId={(row) => row._id || row.Number}
+              getRowId={(row) => row.Id}
               initialState={{
                 pagination: {
                   paginationModel: {
@@ -911,4 +820,4 @@ const DriversLayers = () => {
   );
 };
 
-export default DriversLayers;
+export default VehiclesLayers;

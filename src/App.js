@@ -83,6 +83,7 @@ import RouteScrollToTop from "./helper/RouteScrollToTop";
 import TextGeneratorNewPage from "./pages/TextGeneratorNewPage";
 import Orderspage from "./pages/Orderspage";
 import DriversPage from "./pages/DriversPage";
+import VehiclesPage from "./pages/VehiclesPage";
 
 
 function App() {
@@ -99,6 +100,8 @@ function App() {
         <Route exact path="/index-7" element={<HomePageSeven />} />
         <Route exact path="/Orderspage" element={<Orderspage />} />
         <Route exact path="/DriversPage" element={<DriversPage />} />
+        <Route exact path="/VehiclesPage" element={<VehiclesPage  />} />
+
 
 
 
