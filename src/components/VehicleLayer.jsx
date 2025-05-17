@@ -108,7 +108,7 @@ const[RowID,setRowID]=React.useState(0)
 
 
 useEffect(() => {
-  fetch('https://trackpod-server.vercel.app/orders', {
+  fetch('http://trackpod-server.vercel.app/orders', {
     headers: {
       accept: 'text/plain',
       'X-API-KEY': '0c340847-b764-4ff8-9250-0bb089486648',
@@ -139,7 +139,7 @@ const onSubmit = (data) => {
   setSubmitting(true);
 
   const postData = data; // Adjust this based on the API's expected payload
-  const apiUrl = 'https://trackpod-server.vercel.app/orders1/create1'; // Use the curl example's endpoint
+  const apiUrl = 'http://trackpod-server.vercel.app/orders1/create1'; // Use the curl example's endpoint
   const headers = {
     'Content-Type': 'application/json',
     // Add other headers if needed, e.g., Authorization

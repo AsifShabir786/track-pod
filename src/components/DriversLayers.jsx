@@ -78,7 +78,7 @@ const DriversLayers = () => {
   });
 
   useEffect(() => {
-    fetch('https://trackpod-server.vercel.app/drivers', {
+    fetch('http://trackpod-server.vercel.app/drivers', {
       headers: {
         accept: 'text/plain',
         'X-API-KEY': '0c340847-b764-4ff8-9250-0bb089486648',
@@ -130,7 +130,7 @@ const DriversLayers = () => {
         Phone: data.Phone,
         Active: data.Active,
       };
-      const apiUrl = 'https://trackpod-server.vercel.app/drivers111/add';
+      const apiUrl = 'http://trackpod-server.vercel.app/drivers111/add';
 
       axios
         .post(apiUrl, postData, { headers })
@@ -187,7 +187,7 @@ const DriversLayers = () => {
         Phone: data.Phone,
         Active: data.Active,
       };
-      const apiUrl = 'https://trackpod-server.vercel.app/drivers/update';
+      const apiUrl = 'http://trackpod-server.vercel.app/drivers/update';
 
       axios
         .put(apiUrl, putData, { headers })
@@ -246,7 +246,7 @@ const DriversLayers = () => {
     try {
       const encodedId = encodeURIComponent(rowId);
       console.log('Fetching driver with Id:', rowId, 'Encoded:', encodedId);
-      const response = await axios.get(`https://trackpod-server.vercel.app/drivers/${encodedId}`, {
+      const response = await axios.get(`http://trackpod-server.vercel.app/drivers/${encodedId}`, {
         headers: {
           Accept: 'application/json',
         },
@@ -309,7 +309,7 @@ const DriversLayers = () => {
     try {
       const encodedUsername = encodeURIComponent(username);
       console.log('Fetching driver with Username:', username, 'Encoded:', encodedUsername);
-      const response = await axios.get(`https://trackpod-server.vercel.app/drivers?username=${encodedUsername}&_t=${Date.now()}`, {
+      const response = await axios.get(`http://trackpod-server.vercel.app/drivers?username=${encodedUsername}&_t=${Date.now()}`, {
         headers: { Accept: 'application/json' },
       });
 
@@ -419,7 +419,7 @@ const DriversLayers = () => {
     try {
       const encodedId = encodeURIComponent(driverId);
       console.log('Deleting driver with ID:', driverId, 'Encoded:', encodedId);
-      await axios.delete(`https://trackpod-server.vercel.app/drivers/delete/${encodedId}`, {
+      await axios.delete(`http://trackpod-server.vercel.app/drivers/delete/${encodedId}`, {
         headers: {
           Accept: 'text/plain',
           'Content-Type': 'application/json',
