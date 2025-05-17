@@ -221,7 +221,7 @@ console.log(response.data,'response.data_11')
                       John Doe
                     </Typography>
                     <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.8)" }}>
-                      CEO, Tech Innovations
+                      CEO, Web Buds
                     </Typography>
                   </Box>
                 </Box>
@@ -355,7 +355,7 @@ console.log(response.data,'response.data_11')
                     />
                   </Box>
 
-                  <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2, flexWrap: "wrap" }}>
+                  {/* <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2, flexWrap: "wrap" }}>
                     <Typography
                       variant="body2"
                       color="primary"
@@ -376,7 +376,7 @@ console.log(response.data,'response.data_11')
                     >
                       Create an Account
                     </Typography>
-                  </Box>
+                  </Box> */}
 
                   <Button
                     type="submit"

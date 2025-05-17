@@ -17,6 +17,9 @@ import Orderspage from "./pages/Orderspage";
 import DriversPage from "./pages/DriversPage";
 import VehiclesPage from "./pages/VehiclesPage";
 import LoginPage from "./pages/LoginPage";
+import UsersListPage from "./pages/UsersListPage";
+import UsersGridPage from "./pages/UsersGridPage";
+import ViewProfilePage from "./pages/ViewProfilePage";
 
 import ProtectedRoute from "./pages/ProtectedRoute";
 
@@ -38,6 +41,11 @@ function App() {
             </ProtectedRoute>
           }
         />
+                <Route exact path="/users-list" element={ <ProtectedRoute>
+<UsersListPage />            </ProtectedRoute>} />
+        <Route exact path="/users-grid" element={<UsersGridPage />} />
+        <Route exact path="/view-profile" element={<ViewProfilePage />} />
+
         <Route
           exact
           path="/index-2"

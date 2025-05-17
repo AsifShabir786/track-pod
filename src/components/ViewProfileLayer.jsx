@@ -1,10 +1,44 @@
-import { Icon } from '@iconify/react/dist/iconify.js';
-import React, { useState } from 'react';
+import { Icon } from '@iconify/react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const ViewProfileLayer = () => {
-    const [imagePreview, setImagePreview] = useState('assets/images/user-grid/user-grid-img13.png');
+    // State for user data
+    const [userData, setUserData] = useState({
+        user: {
+            firstName: '',
+            lastName: '',
+            email: '',
+            profilePicture: '',
+            coverPhoto: '',
+            desc: '',
+            gender: '',
+            dateOfBirth: '',
+            role: '',
+            username: '',
+            mobile: ''
+        }
+    });
+    
+    // State for password fields
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    // Load user data from localStorage on component mount
+    useEffect(() => {
+        try {
+            const storedUserData = JSON.parse(localStorage.getItem("currentLoggedinUser") || "{}");
+            console.log(storedUserData, 'userData______');
+            if (storedUserData && storedUserData.user) {
+                setUserData(storedUserData);
+            }
+        } catch (error) {
+            console.error("Error parsing user data from localStorage:", error);
+        }
+    }, []);
 
     // Toggle function for password field
     const togglePasswordVisibility = () => {
@@ -16,106 +50,136 @@ const ViewProfileLayer = () => {
         setConfirmPasswordVisible(!confirmPasswordVisible);
     };
 
+    // Handle image upload
     const readURL = (input) => {
         if (input.target.files && input.target.files[0]) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                setImagePreview(e.target.result);
+                setUserData(prev => ({
+                    ...prev,
+                    user: {
+                        ...prev.user,
+                        profilePicture: e.target.result
+                    }
+                }));
             };
             reader.readAsDataURL(input.target.files[0]);
         }
     };
+
+    // Handle form input changes
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        setUserData(prev => ({
+            ...prev,
+            user: {
+                ...prev.user,
+                [id]: value
+            }
+        }));
+    };
+
+    // Handle form submission
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        
+        try {
+            // Extract the user ID from stored data
+            const userId = userData.user._id || 'USER_ID_HERE';
+            
+            // Prepare the data for the API call
+            const updatedData = {
+                firstName: userData.user.firstName,
+                lastName: userData.user.lastName,
+                email: userData.user.email,
+                mobile: userData.user.mobile || '',
+                username: userData.user.username,
+                gender: userData.user.gender,
+                dateOfBirth: userData.user.dateOfBirth,
+                desc: userData.user.desc,
+                profilePicture: userData.user.profilePicture
+            };
+            
+            // Make the API call
+            const response = await axios.put(
+                `https://trackpod-server.vercel.app/users/api/auth/update/${userId}`,
+                updatedData,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            
+            console.log("API response:", response.data);
+            
+            // Update localStorage with the latest data
+            if (response.data && response.data.success) {
+                const updatedUserData = {
+                    ...userData,
+                    user: {
+                        ...userData.user,
+                        ...updatedData
+                    }
+                };
+                localStorage.setItem("currentLoggedinUser", JSON.stringify(updatedUserData));
+                alert("Profile updated successfully!");
+            } else {
+                alert("Failed to update profile. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error updating profile:", error);
+            alert("Error updating profile. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Handle password update
+    const handlePasswordUpdate = async () => {
+        if (newPassword !== confirmPassword) {
+            alert("Passwords do not match!");
+            return;
+        }
+        
+        if (!newPassword) {
+            alert("Password cannot be empty!");
+            return;
+        }
+        
+        setLoading(true);
+        try {
+            const userId = userData.user._id || 'USER_ID_HERE';
+            
+            const response = await axios.put(
+                `https://trackpod-server.vercel.app/users/api/auth/update/${userId}`,
+                { password: newPassword },
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            
+            if (response.data && response.data.success) {
+                alert("Password updated successfully!");
+                setNewPassword('');
+                setConfirmPassword('');
+            } else {
+                alert("Failed to update password. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error updating password:", error);
+            alert("Error updating password. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="row gy-4">
-            <div className="col-lg-4">
-                <div className="user-grid-card position-relative border radius-16 overflow-hidden bg-base h-100">
-                    <img
-                        src="assets/images/user-grid/user-grid-bg1.png"
-                        alt=""
-                        className="w-100 object-fit-cover"
-                    />
-                    <div className="pb-24 ms-16 mb-24 me-16  mt--100">
-                        <div className="text-center border border-top-0 border-start-0 border-end-0">
-                            <img
-                                src="assets/images/user-grid/user-grid-img14.png"
-                                alt=""
-                                className="border br-white border-width-2-px w-200-px h-200-px rounded-circle object-fit-cover"
-                            />
-                            <h6 className="mb-0 mt-16">Jacob Jones</h6>
-                            <span className="text-secondary-light mb-16">ifrandom@gmail.com</span>
-                        </div>
-                        <div className="mt-24">
-                            <h6 className="text-xl mb-16">Personal Info</h6>
-                            <ul>
-                                <li className="d-flex align-items-center gap-1 mb-12">
-                                    <span className="w-30 text-md fw-semibold text-primary-light">
-                                        Full Name
-                                    </span>
-                                    <span className="w-70 text-secondary-light fw-medium">
-                                        : Will Jonto
-                                    </span>
-                                </li>
-                                <li className="d-flex align-items-center gap-1 mb-12">
-                                    <span className="w-30 text-md fw-semibold text-primary-light">
-                                        {" "}
-                                        Email
-                                    </span>
-                                    <span className="w-70 text-secondary-light fw-medium">
-                                        : willjontoax@gmail.com
-                                    </span>
-                                </li>
-                                <li className="d-flex align-items-center gap-1 mb-12">
-                                    <span className="w-30 text-md fw-semibold text-primary-light">
-                                        {" "}
-                                        Phone Number
-                                    </span>
-                                    <span className="w-70 text-secondary-light fw-medium">
-                                        : (1) 2536 2561 2365
-                                    </span>
-                                </li>
-                                <li className="d-flex align-items-center gap-1 mb-12">
-                                    <span className="w-30 text-md fw-semibold text-primary-light">
-                                        {" "}
-                                        Department
-                                    </span>
-                                    <span className="w-70 text-secondary-light fw-medium">
-                                        : Design
-                                    </span>
-                                </li>
-                                <li className="d-flex align-items-center gap-1 mb-12">
-                                    <span className="w-30 text-md fw-semibold text-primary-light">
-                                        {" "}
-                                        Designation
-                                    </span>
-                                    <span className="w-70 text-secondary-light fw-medium">
-                                        : UI UX Designer
-                                    </span>
-                                </li>
-                                <li className="d-flex align-items-center gap-1 mb-12">
-                                    <span className="w-30 text-md fw-semibold text-primary-light">
-                                        {" "}
-                                        Languages
-                                    </span>
-                                    <span className="w-70 text-secondary-light fw-medium">
-                                        : English
-                                    </span>
-                                </li>
-                                <li className="d-flex align-items-center gap-1">
-                                    <span className="w-30 text-md fw-semibold text-primary-light">
-                                        {" "}
-                                        Bio
-                                    </span>
-                                    <span className="w-70 text-secondary-light fw-medium">
-                                        : Lorem Ipsum&nbsp;is simply dummy text of the printing and
-                                        typesetting industry.
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="col-lg-8">
+            <div className="col-lg-12">
                 <div className="card h-100">
                     <div className="card-body p-24">
                         <ul
@@ -152,21 +216,6 @@ const ViewProfileLayer = () => {
                                     Change Password
                                 </button>
                             </li>
-                            <li className="nav-item" role="presentation">
-                                <button
-                                    className="nav-link d-flex align-items-center px-24"
-                                    id="pills-notification-tab"
-                                    data-bs-toggle="pill"
-                                    data-bs-target="#pills-notification"
-                                    type="button"
-                                    role="tab"
-                                    aria-controls="pills-notification"
-                                    aria-selected="false"
-                                    tabIndex={-1}
-                                >
-                                    Notification Settings
-                                </button>
-                            </li>
                         </ul>
                         <div className="tab-content" id="pills-tabContent">
                             <div
@@ -192,14 +241,14 @@ const ViewProfileLayer = () => {
                                                 htmlFor="imageUpload"
                                                 className="w-32-px h-32-px d-flex justify-content-center align-items-center bg-primary-50 text-primary-600 border border-primary-600 bg-hover-primary-100 text-lg rounded-circle"
                                             >
-                                                <Icon icon="solar:camera-outline" className="icon"></Icon>
+                                                <Icon icon="solar:camera-outline" />
                                             </label>
                                         </div>
                                         <div className="avatar-preview">
                                             <div
                                                 id="imagePreview"
                                                 style={{
-                                                    backgroundImage: `url(${imagePreview})`,
+                                                    backgroundImage: `url(${userData.user.profilePicture || 'assets/images/user-grid/user-grid-img13.png'})`,
                                                     backgroundSize: 'cover',
                                                     backgroundPosition: 'center'
                                                 }}
@@ -208,22 +257,65 @@ const ViewProfileLayer = () => {
                                     </div>
                                 </div>
                                 {/* Upload Image End */}
-                                <form action="#">
+                                <form onSubmit={handleSubmit}>
                                     <div className="row">
                                         <div className="col-sm-6">
                                             <div className="mb-20">
                                                 <label
-                                                    htmlFor="name"
+                                                    htmlFor="firstName"
                                                     className="form-label fw-semibold text-primary-light text-sm mb-8"
                                                 >
-                                                    Full Name
+                                                    First Name
                                                     <span className="text-danger-600">*</span>
                                                 </label>
                                                 <input
                                                     type="text"
                                                     className="form-control radius-8"
-                                                    id="name"
-                                                    placeholder="Enter Full Name"
+                                                    id="firstName"
+                                                    placeholder="Enter First Name"
+                                                    value={userData.user.firstName || ''}
+                                                    onChange={handleInputChange}
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div className="mb-20">
+                                                <label
+                                                    htmlFor="lastName"
+                                                    className="form-label fw-semibold text-primary-light text-sm mb-8"
+                                                >
+                                                    Last Name
+                                                    <span className="text-danger-600">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control radius-8"
+                                                    id="lastName"
+                                                    placeholder="Enter Last Name"
+                                                    value={userData.user.lastName || ''}
+                                                    onChange={handleInputChange}
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div className="mb-20">
+                                                <label
+                                                    htmlFor="username"
+                                                    className="form-label fw-semibold text-primary-light text-sm mb-8"
+                                                >
+                                                    Username
+                                                    <span className="text-danger-600">*</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    className="form-control radius-8"
+                                                    id="username"
+                                                    placeholder="Enter Username"
+                                                    value={userData.user.username || ''}
+                                                    onChange={handleInputChange}
+                                                    required
                                                 />
                                             </div>
                                         </div>
@@ -240,93 +332,85 @@ const ViewProfileLayer = () => {
                                                     className="form-control radius-8"
                                                     id="email"
                                                     placeholder="Enter email address"
+                                                    value={userData.user.email || ''}
+                                                    onChange={handleInputChange}
+                                                    required
                                                 />
                                             </div>
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="mb-20">
                                                 <label
-                                                    htmlFor="number"
+                                                    htmlFor="mobile"
                                                     className="form-label fw-semibold text-primary-light text-sm mb-8"
                                                 >
-                                                    Phone
+                                                    Mobile <span className="text-danger-600">*</span>
                                                 </label>
                                                 <input
-                                                    type="email"
+                                                    type="tel"
                                                     className="form-control radius-8"
-                                                    id="number"
-                                                    placeholder="Enter phone number"
+                                                    id="mobile"
+                                                    placeholder="Enter mobile number"
+                                                    value={userData.user.mobile || ''}
+                                                    onChange={handleInputChange}
+                                                    required
                                                 />
                                             </div>
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="mb-20">
                                                 <label
-                                                    htmlFor="depart"
+                                                    htmlFor="dateOfBirth"
                                                     className="form-label fw-semibold text-primary-light text-sm mb-8"
                                                 >
-                                                    Department
-                                                    <span className="text-danger-600">*</span>{" "}
+                                                    Date of Birth
+                                                </label>
+                                                <input
+                                                    type="date"
+                                                    className="form-control radius-8"
+                                                    id="dateOfBirth"
+                                                    value={userData.user.dateOfBirth ? new Date(userData.user.dateOfBirth).toISOString().split('T')[0] : ''}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-6">
+                                            <div className="mb-20">
+                                                <label
+                                                    htmlFor="gender"
+                                                    className="form-label fw-semibold text-primary-light text-sm mb-8"
+                                                >
+                                                    Gender
                                                 </label>
                                                 <select
                                                     className="form-control radius-8 form-select"
-                                                    id="depart"
-                                                    defaultValue="Select Event Title"
+                                                    id="gender"
+                                                    value={userData.user.gender || ''}
+                                                    onChange={handleInputChange}
                                                 >
-                                                    <option value="Select Event Title" disabled>
-                                                        Select Event Title
-                                                    </option>
-                                                    <option value="Enter Event Title">Enter Event Title</option>
-                                                    <option value="Enter Event Title One">Enter Event Title One</option>
-                                                    <option value="Enter Event Title Two">Enter Event Title Two</option>
+                                                    <option value="" disabled>Select Gender</option>
+                                                    <option value="male">Male</option>
+                                                    <option value="female">Female</option>
+                                                    <option value="other">Other</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div className="col-sm-6">
                                             <div className="mb-20">
                                                 <label
-                                                    htmlFor="desig"
+                                                    htmlFor="role"
                                                     className="form-label fw-semibold text-primary-light text-sm mb-8"
                                                 >
-                                                    Designation
-                                                    <span className="text-danger-600">*</span>{" "}
+                                                    Role
                                                 </label>
-                                                <select
-                                                    className="form-control radius-8 form-select"
-                                                    id="desig"
-                                                    defaultValue="Select Designation Title"
-                                                >
-                                                    <option value="Select Designation Title" disabled>
-                                                        Select Designation Title
-                                                    </option>
-                                                    <option value="Enter Designation Title">Enter Designation Title</option>
-                                                    <option value="Enter Designation Title One">Enter Designation Title One</option>
-                                                    <option value="Enter Designation Title Two">Enter Designation Title Two</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <div className="mb-20">
-                                                <label
-                                                    htmlFor="Language"
-                                                    className="form-label fw-semibold text-primary-light text-sm mb-8"
-                                                >
-                                                    Language
-                                                    <span className="text-danger-600">*</span>{" "}
-                                                </label>
-                                                <select
-                                                    className="form-control radius-8 form-select"
-                                                    id="Language"
-                                                    defaultValue="Select Language"
-                                                >
-                                                    <option value="Select Language" disabled>
-                                                        Select Language
-                                                    </option>
-                                                    <option value="English">English</option>
-                                                    <option value="Bangla">Bangla</option>
-                                                    <option value="Hindi">Hindi</option>
-                                                    <option value="Arabic">Arabic</option>
-                                                </select>
+                                                <input
+                                                    type="text"
+                                                    className="form-control radius-8"
+                                                    id="role"
+                                                    placeholder="Role"
+                                                    value={userData.user.role || ''}
+                                                    readOnly
+                                                />
                                             </div>
                                         </div>
                                         <div className="col-sm-12">
@@ -338,11 +422,11 @@ const ViewProfileLayer = () => {
                                                     Description
                                                 </label>
                                                 <textarea
-                                                    name="#0"
                                                     className="form-control radius-8"
                                                     id="desc"
                                                     placeholder="Write description..."
-                                                    defaultValue={""}
+                                                    value={userData.user.desc || ''}
+                                                    onChange={handleInputChange}
                                                 />
                                             </div>
                                         </div>
@@ -355,15 +439,16 @@ const ViewProfileLayer = () => {
                                             Cancel
                                         </button>
                                         <button
-                                            type="button"
+                                            type="submit"
                                             className="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8"
+                                            disabled={loading}
                                         >
-                                            Save
+                                            {loading ? 'Saving...' : 'Save'}
                                         </button>
                                     </div>
                                 </form>
                             </div>
-                            <div className="tab-pane fade" id="pills-change-passwork" role="tabpanel" aria-labelledby="pills-change-passwork-tab" tabIndex="0">
+                            <div className="tab-pane fade" id="pills-change-passwork" role="tabpanel" aria-labelledby="pills-change-passwork-tab" tabIndex={0}>
                                 <div className="mb-20">
                                     <label htmlFor="your-password" className="form-label fw-semibold text-primary-light text-sm mb-8">
                                         New Password <span className="text-danger-600">*</span>
@@ -374,11 +459,15 @@ const ViewProfileLayer = () => {
                                             className="form-control radius-8"
                                             id="your-password"
                                             placeholder="Enter New Password*"
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
                                         />
                                         <span
-                                            className={`toggle-password ${passwordVisible ? "ri-eye-off-line" : "ri-eye-line"} cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
+                                            className={`toggle-password cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
                                             onClick={togglePasswordVisibility}
-                                        ></span>
+                                        >
+                                            <Icon icon={passwordVisible ? "ri:eye-off-line" : "ri:eye-line"} />
+                                        </span>
                                     </div>
                                 </div>
 
@@ -392,108 +481,32 @@ const ViewProfileLayer = () => {
                                             className="form-control radius-8"
                                             id="confirm-password"
                                             placeholder="Confirm Password*"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
                                         />
                                         <span
-                                            className={`toggle-password ${confirmPasswordVisible ? "ri-eye-off-line" : "ri-eye-line"} cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
+                                            className={`toggle-password cursor-pointer position-absolute end-0 top-50 translate-middle-y me-16 text-secondary-light`}
                                             onClick={toggleConfirmPasswordVisibility}
-                                        ></span>
+                                        >
+                                            <Icon icon={confirmPasswordVisible ? "ri:eye-off-line" : "ri:eye-line"} />
+                                        </span>
                                     </div>
                                 </div>
-                            </div>
-                            <div
-                                className="tab-pane fade"
-                                id="pills-notification"
-                                role="tabpanel"
-                                aria-labelledby="pills-notification-tab"
-                                tabIndex={0}
-                            >
-                                <div className="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                    <label
-                                        htmlFor="companzNew"
-                                        className="position-absolute w-100 h-100 start-0 top-0"
-                                    />
-                                    <div className="d-flex align-items-center gap-3 justify-content-between">
-                                        <span className="form-check-label line-height-1 fw-medium text-secondary-light">
-                                            Company News
-                                        </span>
-                                        <input
-                                            className="form-check-input"
-                                            type="checkbox"
-                                            role="switch"
-                                            id="companzNew"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                    <label
-                                        htmlFor="pushNotifcation"
-                                        className="position-absolute w-100 h-100 start-0 top-0"
-                                    />
-                                    <div className="d-flex align-items-center gap-3 justify-content-between">
-                                        <span className="form-check-label line-height-1 fw-medium text-secondary-light">
-                                            Push Notification
-                                        </span>
-                                        <input
-                                            className="form-check-input"
-                                            type="checkbox"
-                                            role="switch"
-                                            id="pushNotifcation"
-                                            defaultChecked=""
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                    <label
-                                        htmlFor="weeklyLetters"
-                                        className="position-absolute w-100 h-100 start-0 top-0"
-                                    />
-                                    <div className="d-flex align-items-center gap-3 justify-content-between">
-                                        <span className="form-check-label line-height-1 fw-medium text-secondary-light">
-                                            Weekly News Letters
-                                        </span>
-                                        <input
-                                            className="form-check-input"
-                                            type="checkbox"
-                                            role="switch"
-                                            id="weeklyLetters"
-                                            defaultChecked=""
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                    <label
-                                        htmlFor="meetUp"
-                                        className="position-absolute w-100 h-100 start-0 top-0"
-                                    />
-                                    <div className="d-flex align-items-center gap-3 justify-content-between">
-                                        <span className="form-check-label line-height-1 fw-medium text-secondary-light">
-                                            Meetups Near you
-                                        </span>
-                                        <input
-                                            className="form-check-input"
-                                            type="checkbox"
-                                            role="switch"
-                                            id="meetUp"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-switch switch-primary py-12 px-16 border radius-8 position-relative mb-16">
-                                    <label
-                                        htmlFor="orderNotification"
-                                        className="position-absolute w-100 h-100 start-0 top-0"
-                                    />
-                                    <div className="d-flex align-items-center gap-3 justify-content-between">
-                                        <span className="form-check-label line-height-1 fw-medium text-secondary-light">
-                                            Orders Notifications
-                                        </span>
-                                        <input
-                                            className="form-check-input"
-                                            type="checkbox"
-                                            role="switch"
-                                            id="orderNotification"
-                                            defaultChecked=""
-                                        />
-                                    </div>
+                                <div className="d-flex align-items-center justify-content-center gap-3 mt-4">
+                                    <button
+                                        type="button"
+                                        className="border border-danger-600 bg-hover-danger-200 text-danger-600 text-md px-56 py-11 radius-8"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-primary border border-primary-600 text-md px-56 py-12 radius-8"
+                                        onClick={handlePasswordUpdate}
+                                        disabled={loading}
+                                    >
+                                        {loading ? 'Updating...' : 'Update Password'}
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -501,7 +514,6 @@ const ViewProfileLayer = () => {
                 </div>
             </div>
         </div>
-
     );
 };
 
