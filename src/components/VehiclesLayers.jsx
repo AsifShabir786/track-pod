@@ -70,7 +70,7 @@ const VehiclesLayers = () => {
   });
 
   useEffect(() => {
-    fetch('http://trackpod-server.vercel.app/vehicle', {
+    fetch('https://trackpod-server.vercel.app/vehicle', {
       headers: {
         accept: 'text/plain',
         'X-API-KEY': '0c340847-b764-4ff8-9250-0bb089486648',
@@ -120,7 +120,7 @@ const VehiclesLayers = () => {
         Volume: data.Volume,
         Pallets: data.Pallets,
       };
-      const apiUrl = 'http://trackpod-server.vercel.app/vehicle/add';
+      const apiUrl = 'https://trackpod-server.vercel.app/vehicle/add';
 
       axios
         .post(apiUrl, postData, { headers })
@@ -173,7 +173,7 @@ const VehiclesLayers = () => {
         Volume: data.Volume,
         Pallets: data.Pallets,
       };
-      const apiUrl = 'http://trackpod-server.vercel.app/vehicle/update';
+      const apiUrl = 'https://trackpod-server.vercel.app/vehicle/update';
 
       axios
         .put(apiUrl, putData, { headers })
@@ -233,7 +233,7 @@ const VehiclesLayers = () => {
       const encodedUsername = encodeURIComponent(username);
       console.log('Fetching driver with Username:', username, 'Encoded:', encodedUsername);
       const response = await axios.get(
-        `http://trackpod-server.vercel.app/vehicle?username=${encodedUsername}&_t=${Date.now()}`,
+        `https://trackpod-server.vercel.app/vehicle?username=${encodedUsername}&_t=${Date.now()}`,
         {
           headers: { Accept: 'application/json' },
         }
@@ -387,7 +387,7 @@ const VehiclesLayers = () => {
 
     try {
       console.log('Deleting record with ID:', id);
-      const apiUrl = 'http://trackpod-server.vercel.app/vehicle/delete';
+      const apiUrl = 'https://trackpod-server.vercel.app/vehicle/delete';
       await axios.delete(apiUrl, {
         headers: {
           'Content-Type': 'application/json',

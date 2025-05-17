@@ -177,7 +177,7 @@ const OrdersLayer = () => {
   });
 
   useEffect(() => {
-    fetch('http://trackpod-server.vercel.app/orders', {
+    fetch('https://trackpod-server.vercel.app/orders', {
       headers: {
         accept: 'text/plain',
         'X-API-KEY': '0c340847-b764-4ff8-9250-0bb089486648',
