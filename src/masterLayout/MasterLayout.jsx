@@ -2,11 +2,25 @@ import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import ThemeToggleButton from "../helper/ThemeToggleButton";
+import { useNavigate } from "react-router-dom";
 
 const MasterLayout = ({ children }) => {
   let [sidebarActive, seSidebarActive] = useState(false);
   let [mobileMenu, setMobileMenu] = useState(false);
   const location = useLocation(); // Hook to get the current route
+  const navigate = useNavigate();
+const userData = JSON.parse(localStorage.getItem("currentLoggedinUser") || "{}");
+
+const firstName = userData?.user?.firstName || "Guest";
+const role = userData?.user?.role || "User";
+console.log(userData,'userData______')
+  const handleLogout = () => {
+    // Optional: clear token or state
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("currentLoggedinUser");
+    
+    navigate("/LoginPage");
+  };
 
   useEffect(() => {
     // Function to handle dropdown clicks
@@ -1345,11 +1359,13 @@ const MasterLayout = ({ children }) => {
                   <div className="dropdown-menu to-top dropdown-menu-sm">
                     <div className="py-12 px-16 radius-8 bg-primary-50 mb-16 d-flex align-items-center justify-content-between gap-2">
                       <div>
-                        <h6 className="text-lg text-primary-light fw-semibold mb-2">
-                          Shaidul Islam
-                        </h6>
-                        <span className="text-secondary-light fw-medium text-sm">Admin</span>
-                      </div>
+    <h6 className="text-lg text-primary-light fw-semibold mb-2">
+      {firstName}
+    </h6>
+    <span className="text-secondary-light fw-medium text-sm">
+      {role}
+    </span>
+  </div>
                       <button type="button" className="hover-text-danger">
                         <Icon icon="radix-icons:cross-1" className="icon text-xl" />
                       </button>
@@ -1386,12 +1402,12 @@ const MasterLayout = ({ children }) => {
                         </Link>
                       </li>
                       <li>
-                        <Link
-                          className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3"
-                          to="#"
-                        >
-                          <Icon icon="lucide:power" className="icon text-xl" /> Log Out
-                        </Link>
+                      <div
+      className="dropdown-item text-black px-0 py-8 hover-bg-transparent hover-text-danger d-flex align-items-center gap-3 cursor-pointer"
+      onClick={handleLogout}
+    >
+      <Icon icon="lucide:power" className="icon text-xl" /> Log Out
+    </div>
                       </li>
                     </ul>
                   </div>

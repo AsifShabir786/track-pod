@@ -71,6 +71,9 @@ const LoginLayer = () => {
 
       // Store the token in localStorage
       localStorage.setItem("access_token", response.data.access_token)
+localStorage.setItem("currentLoggedinUser", JSON.stringify(response.data))
+console.log(response.data.access_token,'response.data_')
+console.log(response.data,'response.data_11')
 
       // Show success message
       alert("Login successful!")
